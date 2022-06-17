@@ -1,0 +1,49 @@
+<div class="container-xl">
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="container">
+                    <div class="row text-center">
+                        <div class="col-sm">
+                            <button class="btn btn-secondary" (click)="sendAdminRequest('lock')"><i class="bi bi-lock"></i></button>
+                        </div>
+                        <div class="col-sm">
+                            <button class="btn btn-secondary" (click)="sendAdminRequest('unlock')"><i class="bi bi-unlock"></i></button>
+                        </div>
+                        <div class="col-sm">
+                            <button class="btn btn-secondary" (click)="sendAdminRequest('delete')"><i class="bi bi-trash"></i></button>
+                        </div>
+                        <div class="col-sm">
+                            <button class="btn btn-secondary" (click)="sendAdminRequest('upgrade')"><i class="bi bi-arrow-up"></i></button>
+                        </div>
+                        <div class="col-sm">
+                            <button class="btn btn-secondary" (click)="sendAdminRequest('downgrade')"><i  class="bi bi-arrow-down"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="allCheckboxes" name="allCheckboxes" value="allCheckboxes"
+                                onclick='selects()'></th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td><input type="checkbox" value="{{user.id}}" name="idChecked" name="AJDI"
+                                (change)="addUserToList($event.target.value)">
+                        <td>{{user.username}}</td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.role}}</td>
+                        <td><span class="status text-success">&bull;</span>{{user.notLocked}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
