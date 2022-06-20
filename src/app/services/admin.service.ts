@@ -19,8 +19,8 @@ export class AdminService {
 
   public getAllUsers(): Observable<User[]>{
     console.log(this.authenticationService.userValue);
-    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa('test55' + ':' + 'test55') });
-    return this.httpClient.get<User[]>(`${this.apiUrl}/admin/allUsers`,{ headers});
+   // const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa('test55' + ':' + 'test55') });
+    return this.httpClient.get<User[]>(`${this.apiUrl}/admin/allUsers`);
   }
 
   public blockUsers(usersIdList: number[]): Observable<number>{
@@ -28,9 +28,7 @@ export class AdminService {
   }
 
   public unlockUsers(usersIdList: number[]): Observable<number>{
-    const user = this.authenticationService.userValue;
-    const headers = new HttpHeaders({ Authorization: 'Basic '+ user.authdata});
-    return this.httpClient.put<number>(`${this.apiUrl}/admin/unlockUsers`, usersIdList, {headers});
+    return this.httpClient.put<number>(`${this.apiUrl}/admin/unlockUsers`, usersIdList);
   }
 
   public deleteUsers(usersIdList: number[]): Observable<number>{
@@ -38,7 +36,6 @@ export class AdminService {
   }
 
   public upgradeToAdmin(usersIdList: number[]): Observable<number>{
-    const headers = new HttpHeaders({ Authorization: 'Basic ' + btoa('test55' + ':' + 'test55') });
     return this.httpClient.put<number>(`${this.apiUrl}/admin/upgradeToAdmin`, usersIdList);
   }
 

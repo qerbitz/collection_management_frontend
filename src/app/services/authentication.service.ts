@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { User } from '../models/User';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -12,34 +13,40 @@ export class AuthenticationService {
 
   public apiUrl = environment.apiUrl;
   private userSubject: BehaviorSubject<User>;
+  public user: Observable<User>;
+
+
   role: string;
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+    private router: Router) {
     this.userSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('user')));
-   }
+    this.user = this.userSubject.asObservable();
+  }
 
-    public login(username: string, password: string): Observable<User>{
-    let user: User = new User;
-    user.username = username;
-    user.password = password;
+  public login(username: string, password: string){
+      let user: User = new User;
+      user.username = username;
+      user.password = password;
 
-    return this.httpClient.post(`${this.apiUrl}/user/login`, user).pipe(
-      map(( userData: User) => {
-          user.authdata = window.btoa(username + ':' + password);
-          sessionStorage.setItem('username', username);
+    return this.httpClient.post<any>(`${this.apiUrl}/user/login`, user)
+      .pipe(map(user => {
+        user.authdata = window.btoa(username + ':' + password);
+        sessionStorage.setItem('username', JSON.stringify(user));
+        sessionStorage.setItem('auth', window.btoa(username + ':' + password));
 
-          if(userData.role=='ROLE_ADMIN'){
-            sessionStorage.setItem('ROLE', "vw2jzzRZeD");
-          }
-          else{
-            sessionStorage.setItem('ROLE', "Vmjox5Hpn4");
-          }
-          this.userSubject.next(user);
-          return userData;
+        if (user.role == 'ROLE_ADMIN') {
+          sessionStorage.setItem('ROLE', "vw2jzzRZeD");
         }
+        else {
+          sessionStorage.setItem('ROLE', "Vmjox5Hpn4");
+        }
+        this.userSubject.next(user);
+        return user;
+      }
       )
 
-    );
+      );
   }
 
 
@@ -63,8 +70,8 @@ export class AuthenticationService {
   }
 
   logout() {
-    // remove user from local storage to log user out
     localStorage.removeItem('user');
     this.userSubject.next(null);
-}
+    this.router.navigate(['/login']);
+  }
 }

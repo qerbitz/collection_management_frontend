@@ -11,16 +11,26 @@ export class AuthInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
+        if (request.url.includes(`${this.authenticationService.apiUrl}/user/login`)) {
+            return next.handle(request);
+        }
+        if (request.url.includes(`${this.authenticationService.apiUrl}/user/register`)) {
+            return next.handle(request);
+        }
+
+        
         const user = this.authenticationService.userValue;
         const isLoggedIn = user && user.authdata;
+        const auth = sessionStorage.getItem('auth');
         const isApiUrl = request.url.startsWith(environment.apiUrl);
-        if (isLoggedIn && isApiUrl) {
+        console.log(user+'....'+isLoggedIn+'..'+isApiUrl);
+       // if (isLoggedIn && isApiUrl) {
             request = request.clone({
                 setHeaders: { 
-                    Authorization: `Basic ${user.authdata}`
+                    Authorization: `Basic ${auth}`
                 }
             });
-        }
+     //   }
 
         return next.handle(request);
     }

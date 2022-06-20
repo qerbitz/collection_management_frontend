@@ -23,6 +23,9 @@ export class RegisterComponent implements OnInit {
     private notificationService: NotificationService) { }
 
   ngOnInit(): void {
+    if (this.authenticationService.isUserLoggedIn()) {
+      this.router.navigateByUrl('/home');
+    }
   }
 
   public onRegister(user: User): void {
